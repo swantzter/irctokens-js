@@ -40,7 +40,7 @@ describe('Hostmask', () => {
   it('Getting line.hostname should throw if message lacks source', () => {
     const line = tokenise('PRIVMSG #channel hello')
     assert.throws(() => {
-      line.hostmask
+      line.hostmask // eslint-disable-line @typescript-eslint/no-unused-expressions
     }, {
       name: 'TypeError'
     })

@@ -103,7 +103,7 @@ describe('tokenise', () => {
       assert.deepStrictEqual(line.params, ['hello world'])
     })
 
-    it('Should have an empty array fro messages without params', () => {
+    it('Should have an empty array from messages without params', () => {
       const line = tokenise('PRIVMSG')
       assert.strictEqual(line.command, 'PRIVMSG')
       assert.deepStrictEqual(line.params, [])

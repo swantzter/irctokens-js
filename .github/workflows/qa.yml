@@ -42,7 +42,7 @@ jobs:
       - run: npm ci --prefer-offline
       - run: npm run coverage
       - name: Codecov
-        if: matrix.node == 14
+        if: always() && matrix.node == 14
         uses: codecov/codecov-action@v1.0.6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
