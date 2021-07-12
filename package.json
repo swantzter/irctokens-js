@@ -1,0 +1,55 @@
+{
+  "name": "irctokens",
+  "version": "2.0.0",
+  "description": "RFC1459 and IRCv3 protocol tokeniser",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.production.json",
+    "watch": "npm run build -- --watch",
+    "test": "ts-mocha tests/**/*.test.ts",
+    "coverage": "nyc -r lcov -r text npm test",
+    "lint": "eslint src/**/*.ts tests/**/*.ts",
+    "lint:fix": "npm run lint -- --fix",
+    "typecheck": "npm run build -- --noEmit",
+    "prepack": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swantzter/irctokens-js.git"
+  },
+  "keywords": [
+    "irc",
+    "ircv3",
+    "rfc1459",
+    "tokeniser"
+  ],
+  "engines": {
+    "node": ">11.0.0"
+  },
+  "author": "Svante Bengtson <svante@swantzter.se> (https://swantzter.se)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/swantzter/irctokens-js/issues"
+  },
+  "homepage": "https://github.com/swantzter/irctokens-js#readme",
+  "files": [
+    "/dist"
+  ],
+  "devDependencies": {
+    "@types/mocha": "^8.2.3",
+    "@types/node": "^14.17.5",
+    "@types/yaml": "^1.9.7",
+    "@typescript-eslint/eslint-plugin": "^4.28.2",
+    "eslint": "^7.30.0",
+    "eslint-config-standard-with-typescript": "^20.0.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "mocha": "^9.0.2",
+    "nyc": "^15.1.0",
+    "ts-mocha": "^8.0.0",
+    "typescript": "^4.2.4",
+    "yaml": "^1.10.2"
+  }
+}

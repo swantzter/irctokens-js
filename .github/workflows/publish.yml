@@ -1,0 +1,55 @@
+name: Publish to NPM and GPR
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Use Node.js 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: npm ci --prefer-offline
+      - run: npm t
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - registry: npm
+            url: https://registry.npmjs.org/
+            token: ${{ secrets.NPM_TOKEN }}
+          - registry: gpr
+            url: https://npm.pkg.github.com/
+            token: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+          registry-url: ${{ matrix.url }}
+      - run: npm ci --prefer-offline
+      - run: sed -i 's,"irctokens","@swantzter/irctokens",' package*.json
+        if: matrix.registry == 'gpr'
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ matrix.token }}
