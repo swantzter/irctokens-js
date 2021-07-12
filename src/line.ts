@@ -56,8 +56,9 @@ export class Line {
   }
 }
 
-function unescapeTag (value: string) {
+function unescapeTag (value?: string) {
   let unescaped = ''
+  if (!value) return unescaped
   const escaped = value.split('')
   while (escaped.length) {
     const current = escaped.shift() as string
@@ -102,7 +103,7 @@ function _tokenise (line: string) {
   if (!params.length) throw TypeError('Cannot tokenise command-less line')
   const command = (params.shift() as string).toLocaleUpperCase()
 
-  if (trailing) params.push(trailing)
+  if (typeof trailing === 'string') params.push(trailing)
 
   return new Line({
     tags,

@@ -33,7 +33,7 @@ export function format ({ tags, source, command, params }: FormatArgs) {
 
   outs.push(command)
 
-  if (params) {
+  if (params?.length) {
     const paramCopy = [...params]
     let last = paramCopy.pop()
 
