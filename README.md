@@ -5,7 +5,9 @@
 [![Publish to NPM and GCR](https://github.com/swantzter/irctokens-js/actions/workflows/publish.yml/badge.svg)](https://github.com/swantzter/irctokens-js/actions/workflows/publish.yml)
 [![codecov](https://codecov.io/gh/swantzter/irctokens-js/branch/main/graph/badge.svg)](https://codecov.io/gh/swantzter/irctokens-js)
 
-TypeScrip port of the python library [irctokens](https://github.com/jesopo/irctokens)
+TypeScript port of the python library [irctokens](https://github.com/jesopo/irctokens).
+The major and minor version of this library will aim to follow upstream, patch
+will be increased independently.
 
 ## rationale
 
