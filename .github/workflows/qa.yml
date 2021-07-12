@@ -24,8 +24,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        node: [12, 14, 16]
+        include:
+          - node: 12
+            icu: node_modules/full-icu
+          - node: 14
+          - node: 16
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -35,12 +40,16 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - name: Use Node.js 14
+      - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
       - run: npm ci --prefer-offline
+      - run: npm i --no-save full-icu
+        if: matrix.node == 12
       - run: npm run coverage
+        env:
+          NODE_ICU_DATA: ${{ matrix.icu }}
       - name: Codecov
         if: always() && matrix.node == 14
         uses: codecov/codecov-action@v1.0.6
