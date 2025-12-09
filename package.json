@@ -1,6 +1,6 @@
 {
   "name": "irctokens",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "RFC1459 and IRCv3 protocol tokeniser",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
