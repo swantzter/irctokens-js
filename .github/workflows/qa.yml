@@ -6,17 +6,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - name: Use Node.js 14
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
+          node-version: 24
       - run: npm ci --prefer-offline
       - run: npm run lint
       - run: npm run typecheck
@@ -27,31 +20,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - node: 12
-            icu: node_modules/full-icu
-          - node: 14
-          - node: 16
+          - node: 20
+          - node: 22
+          - node: 24
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+      - uses: actions/checkout@v6
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
       - run: npm ci --prefer-offline
-      - run: npm i --no-save full-icu
-        if: matrix.node == 12
-      - run: npm run coverage
-        env:
-          NODE_ICU_DATA: ${{ matrix.icu }}
+      - run: npm run test:coverage
       - name: Codecov
-        if: always() && matrix.node == 14
-        uses: codecov/codecov-action@v1.0.6
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+        if: always() && matrix.node == 24
+        uses: codecov/codecov-action@v5

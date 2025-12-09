@@ -10,12 +10,22 @@ describe('tokenise', () => {
       tags: { id: '123' },
       source: 'nick!user@host',
       command: 'PRIVMSG',
-      params: ['#channel', 'hello world']
+      params: ['#channel', 'hello world'],
     }))
   })
 
   it('Should stop tokenising at nullbyte', () => {
     const line = tokenise(':nick!user@host PRIVMSG #channel :hello\x00 world')
+    assert.deepStrictEqual(line.params, ['#channel', 'hello'])
+  })
+
+  it('Should stop tokenising at linefeed', () => {
+    const line = tokenise(':nick!user@host PRIVMSG #channel :hello\n world')
+    assert.deepStrictEqual(line.params, ['#channel', 'hello'])
+  })
+
+  it('Should stop tokenising at carriage return', () => {
+    const line = tokenise(':nick!user@host PRIVMSG #channel :hello\r world')
     assert.deepStrictEqual(line.params, ['#channel', 'hello'])
   })
 

@@ -42,7 +42,7 @@ describe('Hostmask', () => {
     assert.throws(() => {
       line.hostmask // eslint-disable-line @typescript-eslint/no-unused-expressions
     }, {
-      name: 'TypeError'
+      name: 'TypeError',
     })
   })
 })

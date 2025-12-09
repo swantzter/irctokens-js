@@ -1,15 +1,16 @@
 {
+  "extends": "@tsconfig/node24",
   "compilerOptions": {
-    "target": "es2019",
-    "module": "commonjs",
     "declaration": true,
     "sourceMap": true,
     "outDir": "./dist",
     "strict": true,
-    "noImplicitAny": true,
-    "moduleResolution": "node",
-    "esModuleInterop": true
   },
+  "include": [
+    "src/**/*.ts",
+    "tests/**/*.ts",
+    "*.config.mjs"
+  ],
   "exclude": [
     "dist",
     "node_modules"

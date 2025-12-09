@@ -8,48 +8,45 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          path: |
-            ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - name: Use Node.js 14
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
+          node-version: 24
+          cache: npm
       - run: npm ci --prefer-offline
       - run: npm t
 
-  publish:
+  publish-npm:
     needs: test
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - registry: npm
-            url: https://registry.npmjs.org/
-            token: NPM_TOKEN
-          - registry: gpr
-            url: https://npm.pkg.github.com/
-            token: GITHUB_TOKEN
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - uses: actions/setup-node@v2
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci --prefer-offline
+      - run: npm publish --provenance
+
+  publish-gpr:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: 14
-          registry-url: ${{ matrix.url }}
+          node-version: 24
+          cache: npm
+          registry-url: https://npm.pkg.github.com/
       - run: npm ci --prefer-offline
       - run: sed -i 's,"irctokens","@swantzter/irctokens",' package*.json
-        if: matrix.registry == 'gpr'
       - run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets[matrix.token] }}
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

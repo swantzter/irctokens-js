@@ -1,6 +1,7 @@
 import { TAG_ESCAPED, TAG_UNESCAPED } from './const'
 import { format } from './formatting'
-import { hostmask, Hostmask } from './hostmask'
+import type { Hostmask } from './hostmask'
+import { hostmask } from './hostmask'
 import type { TextEncodingLabel } from '.'
 
 export interface LineArgs {
@@ -38,7 +39,7 @@ export class Line {
       tags: this.tags,
       source: this.source,
       command: this.command,
-      params: this.params
+      params: this.params,
     })
   }
 
@@ -47,7 +48,7 @@ export class Line {
       tags: this.tags,
       source,
       command: this.command,
-      params: this.params
+      params: this.params,
     })
   }
 
@@ -61,10 +62,12 @@ function unescapeTag (value?: string) {
   if (!value) return unescaped
   const escaped = value.split('')
   while (escaped.length) {
-    const current = escaped.shift() as string
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const current = escaped.shift()!
     if (current === '\\') {
       if (escaped.length) {
-        const next = escaped.shift() as string
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const next = escaped.shift()!
         const duo = `${current}${next}`
         const index = TAG_ESCAPED.indexOf(duo)
 
@@ -81,7 +84,7 @@ function unescapeTag (value?: string) {
 function _tokenise (line: string) {
   let value = line
   let tags: Record<string, string> | undefined
-  if (value[0] === '@') {
+  if (value.startsWith('@')) {
     let tagsS
     ; [tagsS, value] = value.substring(1).split(/ (.*)/)
     tags = {}
@@ -96,12 +99,14 @@ function _tokenise (line: string) {
   const params = value.split(' ').filter(part => !!part)
 
   let source: string | undefined
-  if (params[0][0] === ':') {
-    source = (params.shift() as string).substring(1)
+  if (params[0].startsWith(':')) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    source = (params.shift()!).substring(1)
   }
 
   if (!params.length) throw TypeError('Cannot tokenise command-less line')
-  const command = (params.shift() as string).toLocaleUpperCase()
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const command = (params.shift()!).toLocaleUpperCase()
 
   if (typeof trailing === 'string') params.push(trailing)
 
@@ -109,7 +114,7 @@ function _tokenise (line: string) {
     tags,
     source,
     command,
-    params
+    params,
   })
 }
 
@@ -137,8 +142,10 @@ export function tokenise (
     dline = line
   }
 
-  if (dline.includes('\x00')) {
-    [dline] = dline.split('\x00')
+  for (const badchar of ['\x00', '\r', '\n']) {
+    if (dline.includes(badchar)) {
+      [dline] = dline.split(badchar)
+    }
   }
 
   return _tokenise(dline)

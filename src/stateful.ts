@@ -1,5 +1,6 @@
 import type { TextEncodingLabel } from '.'
-import { Line, tokenise } from './line'
+import type { Line } from './line'
+import { tokenise } from './line'
 
 export class StatefulDecoder {
   #encoding: TextEncodingLabel

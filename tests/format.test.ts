@@ -8,7 +8,7 @@ describe('format', () => {
       const line = new Line({
         command: 'PRIVMSG',
         params: ['#channel', 'hello'],
-        tags: { id: '\\ ;\r\n' }
+        tags: { id: '\\ ;\r\n' },
       })
       assert.strictEqual(line.format(), '@id=\\\\\\s\\:\\r\\n PRIVMSG #channel hello')
     })
@@ -22,7 +22,7 @@ describe('format', () => {
       const line = new Line({
         command: 'PRIVMSG',
         params: ['#channel', 'hello'],
-        tags: { a: undefined as unknown as string }
+        tags: { a: undefined as unknown as string },
       })
       assert.strictEqual(line.format(), '@a PRIVMSG #channel hello')
     })
@@ -31,7 +31,7 @@ describe('format', () => {
       const line = new Line({
         command: 'PRIVMSG',
         params: ['#channel', 'hello'],
-        tags: { a: '' }
+        tags: { a: '' },
       })
       assert.strictEqual(line.format(), '@a PRIVMSG #channel hello')
     })
@@ -42,7 +42,7 @@ describe('format', () => {
       const line = new Line({
         command: 'PRIVMSG',
         params: ['#channel', 'hello'],
-        source: 'nick!user@host'
+        source: 'nick!user@host',
       })
       assert.strictEqual(line.format(), ':nick!user@host PRIVMSG #channel hello')
     })
@@ -83,7 +83,7 @@ describe('format', () => {
       assert.throws(() => {
         line.format()
       }, {
-        name: 'TypeError'
+        name: 'TypeError',
       })
     })
 
@@ -92,7 +92,7 @@ describe('format', () => {
       assert.throws(() => {
         line.format()
       }, {
-        name: 'TypeError'
+        name: 'TypeError',
       })
     })
   })
